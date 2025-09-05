@@ -1,33 +1,36 @@
 
 use std::io;
 fn main() {
-    const AMOUNT: usize = 9;
+     
      //let mut input: [i32; AMOUNT] = [1,14,67,83,42,6,17,33,91];
-     let mut input = String::new();
-     let mut input2 = String::new();
+     let mut input1: String = String::new();
+     let mut input2: String  = String::new();
 
-    io::stdin().read_line(&mut input).expect("failed to read");
+    io::stdin().read_line(&mut input1).expect("failed to read");
 
-    let input: usize = input;
-     io::stdin().read_line(&mut input2).expect("failed to read");
+    let amount_of_num: usize= input1.trim().parse().unwrap();
 
-    
+    io::stdin().read_line(&mut input2).expect("failed to read");
+    let mut numbers: Vec<u32> = Vec::new();
 
-    for i in 0..AMOUNT {
+   
+    for word in input2.split_whitespace() {
+
+        let NumberToAdd = word.trim().parse().unwrap();
+        numbers.push(NumberToAdd);
         
     }
+
     let mut sum = 0;
-    println!("Hello, world!");
-       
-    input.sort();
-    println!("{}", input[1]);
-    println!("the sum is now {}", sum);
-    for i in 0..AMOUNT{
-        if !(i < AMOUNT/2) {
-            sum += input[i];
+
+    numbers.sort();
+    for i in 0..amount_of_num{
+        if !(i < amount_of_num/2) {
+            sum += numbers[i];
         }
         
     }
 
     println!("the sum is {}", sum);
+    
 }
