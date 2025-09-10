@@ -6,10 +6,11 @@ const THREE_STAR_THRESHOLD: usize = 20;
 const FOUR_STAR_THRESHOLD: usize = 16;
 const FIVE_STAR_THRESHOLD: usize = 10;
 fn main() {
-  //  println!("Hello, world!");
+    //  println!("Hello, world!");
 
     let mut winstreak = 0;
-    let mut stars: u8 = 0;
+    let mut curent_stars: u8 = 0;
+    let mut curent_rank: u8 = LOWEST_RANK.try_into().unwrap();
 
     let mut stars_for_rank: Vec<u8> = Vec::new();
 
@@ -28,7 +29,7 @@ fn main() {
         stars_for_rank.push(temp);
     }
 
-   // print!("{:?}", stars_for_rank);
+    // print!("{:?}", stars_for_rank);
 
     let mut input: String = String::new();
     io::stdin().read_line(&mut input).unwrap();
@@ -38,34 +39,39 @@ fn main() {
 
     for game in &match_history {
         if game.eq_ignore_ascii_case(&'W') {
-            stars += 1;
             winstreak += 1;
+
             if winstreak >= 3 {
-                stars += 1;
+                curent_stars += 2;
+            } else {
+                curent_stars += 1;
+            }
+            if curent_rank > get_rank(curent_stars, &stars_for_rank) {
+                curent_rank = get_rank(curent_stars, &stars_for_rank);
+               // println!("rank updated to {}", curent_rank);
             }
         } else if game.eq_ignore_ascii_case(&'L') {
-            if get_rank(stars, &stars_for_rank) < 20 {
-                stars -= 1;
+            if get_rank(curent_stars, &stars_for_rank) <= 20 {
+                curent_stars -= 1;
+                if curent_rank > get_rank(curent_stars, &stars_for_rank) {
+                    curent_rank = get_rank(curent_stars, &stars_for_rank);
+                }
             }
 
             winstreak = 0;
         }
     }
 
-   /*  println!(
-        "you have {} stars, so you are rank{}",
-        stars,
-        get_rank(stars, &stars_for_rank)
-    );*/
-    println!("{}", get_rank(stars, &stars_for_rank));
+    println!("stars: {}", curent_stars);
+    println!("{}", curent_rank);
 }
-fn get_rank(stars: u8, stars_for_rank: &Vec<u8>) -> usize {
+fn get_rank(curent_stars: u8, stars_for_rank: &Vec<u8>) -> u8 {
     let mut stars_needed_for_rank = 0;
 
     for (i, &stars_for_this_rank) in stars_for_rank.iter().enumerate() {
         stars_needed_for_rank += stars_for_this_rank as u8;
-        if stars <= stars_needed_for_rank {
-            return LOWEST_RANK - i; //current rank
+        if curent_stars < stars_needed_for_rank  {
+            return (LOWEST_RANK - i).try_into().unwrap(); //current rank
         }
     }
     return 25;
